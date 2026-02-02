@@ -1,8 +1,37 @@
-'use client';
-
-import { BarChart3, Users, Wallet, TrendingUp, ArrowUpRight, ArrowDownRight, Briefcase } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { BarChart3, Users, Wallet, TrendingUp, ArrowUpRight, ArrowDownRight, Briefcase, Loader2, ExternalLink } from 'lucide-react';
+import api from '../../lib/api';
+import { useRouter } from 'next/navigation';
 
 export default function OverviewInvestor() {
+    const router = useRouter();
+    const [interests, setInterests] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchInterests = async () => {
+            try {
+                const response = await api.get('/interests/');
+                setInterests(response.data);
+            } catch (error) {
+                console.error('Error fetching interests:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchInterests();
+    }, []);
+
+    if (isLoading) {
+        return (
+            <div className="p-20 flex flex-col items-center justify-center gap-4">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <p className="text-sm font-medium text-muted-foreground">Analyzing portfolio...</p>
+            </div>
+        );
+    }
+
     return (
         <div className="p-6 space-y-6 overflow-hidden">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -14,9 +43,9 @@ export default function OverviewInvestor() {
                     icon={<Wallet className="w-4 h-4 text-primary" />}
                 />
                 <StatCard
-                    label="Total Invested"
-                    value="$180,000"
-                    trend="+5.2%"
+                    label="Total Interests"
+                    value={interests.length.toString()}
+                    trend={`+${interests.length}`}
                     trendUp={true}
                     icon={<Briefcase className="w-4 h-4 text-blue-500" />}
                 />
@@ -52,25 +81,36 @@ export default function OverviewInvestor() {
                 </div>
 
                 <div className="rounded-xl border border-border bg-card p-4 flex flex-col">
-                    <h3 className="font-semibold text-sm mb-4">New Opportunities</h3>
+                    <h3 className="font-semibold text-sm mb-4">Your Recent Interests</h3>
                     <div className="space-y-3">
-                        {['HealthTech AI', 'EcoStay Lodge', 'Global Edu Portal'].map((app, i) => (
-                            <div key={i} className="flex items-center justify-between p-3 hover:bg-accent/50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-border">
+                        {interests.length > 0 ? interests.slice(0, 3).map((interest, i) => (
+                            <div
+                                key={interest.id}
+                                onClick={() => router.push(`/listings/${interest.listing}`)}
+                                className="flex items-center justify-between p-3 hover:bg-accent/50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-border"
+                            >
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-[10px] text-white font-bold">
-                                        {app[0]}
+                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-[10px] text-white font-bold">
+                                        ID
                                     </div>
                                     <div>
-                                        <div className="font-medium text-xs">{app}</div>
-                                        <div className="text-[10px] text-muted-foreground">App • High ROI</div>
+                                        <div className="font-medium text-xs">Listing #{interest.listing}</div>
+                                        <div className="text-[10px] text-muted-foreground">{interest.status} • {new Date(interest.created_at).toLocaleDateString()}</div>
                                     </div>
                                 </div>
                                 <ArrowUpRight className="w-4 h-4 text-primary" />
                             </div>
-                        ))}
+                        )) : (
+                            <div className="py-8 text-center bg-accent/30 rounded-xl border border-dashed border-border">
+                                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">No interests yet</p>
+                            </div>
+                        )}
                     </div>
-                    <button className="mt-4 w-full py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors border border-primary/20">
-                        Browse More
+                    <button
+                        onClick={() => router.push('/explore')}
+                        className="mt-4 w-full py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors border border-primary/20"
+                    >
+                        Explore Opportunities
                     </button>
                 </div>
             </div>

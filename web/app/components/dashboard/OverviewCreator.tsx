@@ -1,12 +1,17 @@
-'use client';
-
-import { BarChart3, Users, Activity, ExternalLink, Star, Eye, MessageSquare, ArrowUpRight, Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { BarChart3, Users, Activity, ExternalLink, Star, Eye, MessageSquare, ArrowUpRight, Plus, Loader2 } from 'lucide-react';
+import api from '../../lib/api';
+import { useRouter } from 'next/navigation';
 
 interface OverviewCreatorProps {
     type: 'app_creator' | 'hospitality' | 'university';
 }
 
 export default function OverviewCreator({ type }: OverviewCreatorProps) {
+    const router = useRouter();
+    const [leads, setLeads] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
     const labels = {
         app_creator: { unit: 'Downloads', lead: 'Beta Users' },
         hospitality: { unit: 'Bookings', lead: 'Inquiries' },
@@ -15,10 +20,34 @@ export default function OverviewCreator({ type }: OverviewCreatorProps) {
 
     const currentLabels = labels[type] || labels.app_creator;
 
+    useEffect(() => {
+        const fetchLeads = async () => {
+            try {
+                const response = await api.get('/interests/');
+                setLeads(response.data);
+            } catch (error) {
+                console.error('Error fetching leads:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchLeads();
+    }, []);
+
+    if (isLoading) {
+        return (
+            <div className="p-20 flex flex-col items-center justify-center gap-4">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <p className="text-sm font-medium text-muted-foreground">Gathering leads...</p>
+            </div>
+        );
+    }
+
     return (
         <div className="p-6 space-y-6 overflow-hidden">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div onClick={() => window.location.href = '/dashboard/create-listing'} className="flex flex-col justify-center p-4 rounded-xl border border-dashed border-primary/40 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer group">
+                <div onClick={() => router.push('/dashboard/create-listing')} className="flex flex-col justify-center p-4 rounded-xl border border-dashed border-primary/40 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer group">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white group-hover:scale-110 transition-transform shadow-lg shadow-primary/20">
                             <Plus className="w-5 h-5" />
@@ -37,8 +66,8 @@ export default function OverviewCreator({ type }: OverviewCreatorProps) {
                 />
                 <StatCard
                     label={`Total ${currentLabels.lead}`}
-                    value="156"
-                    trend="+12"
+                    value={leads.length.toString()}
+                    trend={`+${leads.length}`}
                     icon={<Users className="w-4 h-4 text-blue-500" />}
                 />
                 <StatCard
@@ -72,20 +101,28 @@ export default function OverviewCreator({ type }: OverviewCreatorProps) {
                 <div className="rounded-xl border border-border bg-card p-4 flex flex-col">
                     <h3 className="font-semibold text-sm mb-4">Recent {currentLabels.lead}</h3>
                     <div className="space-y-3">
-                        {[1, 2, 3, 4].map((_, i) => (
-                            <div key={i} className="flex items-center justify-between p-2 hover:bg-accent/50 rounded-lg transition-colors cursor-pointer group">
+                        {leads.length > 0 ? leads.slice(0, 4).map((lead) => (
+                            <div
+                                key={lead.id}
+                                className="flex items-center justify-between p-2 hover:bg-accent/50 rounded-lg transition-colors cursor-pointer group"
+                            >
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-[10px] font-bold">
-                                        JD
+                                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-bold text-primary">
+                                        {lead.user[0]?.toUpperCase() || 'U'}
                                     </div>
                                     <div>
-                                        <div className="font-medium text-xs">User_{i + 10}</div>
-                                        <div className="text-[10px] text-muted-foreground">2 hours ago</div>
+                                        <div className="font-medium text-xs">{lead.user}</div>
+                                        <div className="text-[10px] text-muted-foreground">{new Date(lead.created_at).toLocaleDateString()}</div>
                                     </div>
                                 </div>
                                 <MessageSquare className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
                             </div>
-                        ))}
+                        )) : (
+                            <div className="py-12 text-center bg-accent/30 rounded-xl border border-dashed border-border flex flex-col items-center gap-2">
+                                <Users className="w-6 h-6 text-muted-foreground opacity-20" />
+                                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">No leads yet</p>
+                            </div>
+                        )}
                     </div>
                     <button className="mt-4 w-full py-2 text-xs font-bold text-foreground hover:bg-accent rounded-lg transition-colors border border-border">
                         Manage Leads
