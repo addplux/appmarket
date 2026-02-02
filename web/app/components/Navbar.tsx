@@ -82,7 +82,7 @@ export default function Navbar() {
                         Profile
                       </Link>
                       <Link
-                        href="/my-investments"
+                        href="/dashboard"
                         className="block px-4 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
                         onClick={() => setShowUserMenu(false)}
                       >
@@ -139,7 +139,7 @@ export default function Navbar() {
                 <Link href="/dashboard" className="block hover:bg-gray-800 px-3 py-2 rounded-md text-base font-medium">Dashboard</Link>
                 <Link href="/profile" className="block hover:bg-gray-800 px-3 py-2 rounded-md text-base font-medium">Profile</Link>
                 <Link href="/settings" className="block hover:bg-gray-800 px-3 py-2 rounded-md text-base font-medium">Settings</Link>
-                <Link href="/my-investments" className="block hover:bg-gray-800 px-3 py-2 rounded-md text-base font-medium">My Investments</Link>
+                <Link href="/dashboard" className="block hover:bg-gray-800 px-3 py-2 rounded-md text-base font-medium">My Investments</Link>
                 <button
                   onClick={handleLogout}
                   className="w-full text-left block hover:bg-gray-800 px-3 py-2 rounded-md text-base font-medium text-red-400"

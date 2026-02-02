@@ -1,19 +1,29 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ListingCard from '../components/ListingCard';
 import { Search, Filter, Loader2 } from 'lucide-react';
 import api from '../lib/api';
 import { Listing, Category } from '../types';
+import { useSearchParams } from 'next/navigation';
 
-export default function ExplorePage() {
+function ExploreContent() {
+    const searchParams = useSearchParams();
+    const categoryParam = searchParams.get('category');
+
     const [listings, setListings] = useState<Listing[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [activeCategory, setActiveCategory] = useState('all');
+    const [activeCategory, setActiveCategory] = useState(categoryParam || 'all');
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (categoryParam) {
+            setActiveCategory(categoryParam);
+        }
+    }, [categoryParam]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -111,5 +121,20 @@ export default function ExplorePage() {
 
             <Footer />
         </div>
+    );
+}
+
+export default function ExplorePage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+                <Navbar />
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <p className="text-muted-foreground animate-pulse">Initializing market...</p>
+                <Footer />
+            </div>
+        }>
+            <ExploreContent />
+        </Suspense>
     );
 }

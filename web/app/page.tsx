@@ -1,6 +1,7 @@
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -17,15 +18,23 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {['Emerging Apps', 'Hotels & Lodges', 'Universities'].map((cat, i) => (
-              <div key={i} className="group p-6 rounded-2xl bg-card border border-border hover:border-primary/50 hover:bg-accent transition-all cursor-pointer">
+            {[
+              { name: 'Emerging Apps', slug: 'app_creator' },
+              { name: 'Hotels & Lodges', slug: 'hospitality' },
+              { name: 'Universities', slug: 'university' }
+            ].map((cat, i) => (
+              <Link
+                key={i}
+                href={`/explore?category=${cat.slug}`}
+                className="group p-6 rounded-2xl bg-card border border-border hover:border-primary/50 hover:bg-accent transition-all cursor-pointer"
+              >
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
                   {/* Icon placeholder */}
                   <div className="w-6 h-6 bg-current rounded-full opacity-20" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{cat}</h3>
-                <p className="text-muted-foreground text-sm">Discover top-rated {cat.toLowerCase()} with high growth potential.</p>
-              </div>
+                <h3 className="text-xl font-semibold mb-2">{cat.name}</h3>
+                <p className="text-muted-foreground text-sm">Discover top-rated {cat.name.toLowerCase()} with high growth potential.</p>
+              </Link>
             ))}
           </div>
         </div>
