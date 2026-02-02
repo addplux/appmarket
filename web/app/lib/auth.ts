@@ -22,6 +22,7 @@ export interface RegisterData {
     email: string;
     password: string;
     password_confirm: string;
+    user_type: string;
     first_name?: string;
     last_name?: string;
 }

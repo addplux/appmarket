@@ -23,23 +23,23 @@ export default function AuthInput({
 
     return (
         <div className="space-y-2">
-            <label className="block text-sm font-medium text-slate-300">
+            <label className="block text-sm font-medium text-muted-foreground">
                 {label}
             </label>
             <div className="relative">
                 {icon && (
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                         {icon}
                     </div>
                 )}
                 <input
                     type={inputType}
                     className={`
-            w-full px-4 py-3 bg-slate-900/50 border rounded-lg
-            text-slate-100 placeholder-slate-500
-            focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent
+            w-full px-4 py-3 bg-background/50 border rounded-lg
+            text-foreground placeholder-muted-foreground
+            focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
             transition-all
-            ${error ? 'border-red-500' : 'border-slate-700'}
+            ${error ? 'border-destructive' : 'border-border'}
             ${icon ? 'pl-10' : ''}
             ${isPassword ? 'pr-10' : ''}
             ${className}
@@ -50,14 +50,14 @@ export default function AuthInput({
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                     >
                         {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                 )}
             </div>
             {error && (
-                <p className="text-sm text-red-400">{error}</p>
+                <p className="text-sm text-destructive">{error}</p>
             )}
         </div>
     );

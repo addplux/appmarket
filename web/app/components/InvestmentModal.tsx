@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { X, DollarSign, Send } from 'lucide-react';
 
 interface InvestmentModalProps {
@@ -10,7 +11,7 @@ interface InvestmentModalProps {
 }
 
 export default function InvestmentModal({ isOpen, onClose, listingTitle }: InvestmentModalProps) {
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState<number | ''>('');
     const [message, setMessage] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -35,65 +36,72 @@ export default function InvestmentModal({ isOpen, onClose, listingTitle }: Inves
     };
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
-            <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={onClose} />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
 
-            <div className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
-                <div className="p-6 border-b border-slate-800 flex justify-between items-center">
-                    <h3 className="text-xl font-bold">Invest in {listingTitle}</h3>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors">
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="relative bg-card border border-border rounded-2xl shadow-2xl p-6 w-full max-w-lg z-10"
+            >
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                    <X className="h-5 w-5" />
+                </button>
 
-                <div className="p-6">
-                    {isSuccess ? (
-                        <div className="text-center py-8">
-                            <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Send className="w-8 h-8" />
-                            </div>
-                            <h4 className="text-2xl font-bold mb-2">Request Sent!</h4>
-                            <p className="text-slate-400">The developer will review your investment proposal and contact you soon.</p>
+                <h2 className="text-2xl font-bold mb-2">Invest in {listingTitle}</h2>
+                <p className="text-muted-foreground text-sm mb-6">Enter your investment details below to proceed.</p>
+
+                {isSuccess ? (
+                    <div className="text-center py-8">
+                        <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Send className="w-8 h-8" />
                         </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-400 mb-2">Investment Amount ($)</label>
-                                <div className="relative">
-                                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                                    <input
-                                        type="number"
-                                        required
-                                        value={amount}
-                                        onChange={(e) => setAmount(e.target.value)}
-                                        placeholder="e.g. 10000"
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:border-violet-500 transition-colors"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-slate-400 mb-2">Message to Developer</label>
-                                <textarea
-                                    rows={4}
-                                    value={message}
-                                    onChange={(e) => setMessage(e.target.value)}
-                                    placeholder="Introduce yourself and your interest in this project..."
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 focus:outline-none focus:border-violet-500 transition-colors resize-none"
+                        <h4 className="text-2xl font-bold mb-2">Request Sent!</h4>
+                        <p className="text-muted-foreground">The developer will review your investment proposal and contact you soon.</p>
+                    </div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Investment Amount (USD)</label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                                <input
+                                    type="number"
+                                    min="100"
+                                    required
+                                    value={amount}
+                                    onChange={(e) => setAmount(Number(e.target.value))}
+                                    placeholder="e.g. 10000"
+                                    className="w-full bg-background border border-border rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:border-primary transition-colors"
                                 />
                             </div>
+                        </div>
 
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white font-bold py-4 rounded-xl flex items-center justify-center shadow-lg shadow-violet-900/40 transition-all hover:scale-[1.02] active:scale-[0.98]"
-                            >
-                                {isSubmitting ? 'Sending Request...' : 'Submit Proposal'}
-                            </button>
-                        </form>
-                    )}
-                </div>
-            </div>
+                        <div>
+                            <label className="block text-sm font-medium text-muted-foreground mb-2">Message (Optional)</label>
+                            <textarea
+                                rows={3}
+                                placeholder="Any questions or comments?"
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                className="w-full bg-background border border-border rounded-xl py-3 px-4 focus:outline-none focus:border-primary transition-colors resize-none"
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white font-bold py-4 rounded-xl flex items-center justify-center shadow-lg shadow-violet-900/40 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            {isSubmitting ? 'Sending Request...' : 'Submit Proposal'}
+                        </button>
+                    </form>
+                )}
+            </motion.div>
         </div>
     );
 }
