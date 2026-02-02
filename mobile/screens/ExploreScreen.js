@@ -167,7 +167,6 @@ const styles = StyleSheet.create({
     imageContainer: {
         height: 180,
         backgroundColor: '#1e293b',
-        relative: 'true',
     },
     cardImage: {
         width: '100%',
