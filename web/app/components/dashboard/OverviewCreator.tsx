@@ -1,6 +1,6 @@
 'use client';
 
-import { BarChart3, Users, Activity, ExternalLink, Star, Eye, MessageSquare, ArrowUpRight } from 'lucide-react';
+import { BarChart3, Users, Activity, ExternalLink, Star, Eye, MessageSquare, ArrowUpRight, Plus } from 'lucide-react';
 
 interface OverviewCreatorProps {
     type: 'app_creator' | 'hospitality' | 'university';
@@ -18,6 +18,17 @@ export default function OverviewCreator({ type }: OverviewCreatorProps) {
     return (
         <div className="p-6 space-y-6 overflow-hidden">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div onClick={() => window.location.href = '/dashboard/create-listing'} className="flex flex-col justify-center p-4 rounded-xl border border-dashed border-primary/40 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer group">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white group-hover:scale-110 transition-transform shadow-lg shadow-primary/20">
+                            <Plus className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <div className="font-bold text-sm">Create New</div>
+                            <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Post a new {type.split('_')[0]}</div>
+                        </div>
+                    </div>
+                </div>
                 <StatCard
                     label="Total Visibility"
                     value="42.8k"

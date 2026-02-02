@@ -17,4 +17,9 @@ class ListingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Listing
-        fields = '__all__'
+        fields = (
+            'id', 'owner', 'category', 'title', 'description', 
+            'how_it_works', 'image', 'logo', 'video_url', 
+            'external_link', 'apk_file', 'price', 'features', 
+            'created_at', 'status', 'is_active', 'screenshots'
+        )

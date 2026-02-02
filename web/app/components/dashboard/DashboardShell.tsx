@@ -13,7 +13,7 @@ export default function DashboardShell({ children, user }: { children: React.Rea
         { id: 'overview', label: 'Overview', icon: <Home className="w-4 h-4" />, href: '/dashboard' },
         { id: 'analytics', label: 'Traffic & Views', icon: <PieChart className="w-4 h-4" />, href: '#' },
         { id: 'leads', label: 'Leads & Interest', icon: <Users className="w-4 h-4" />, href: '#' },
-        { id: 'listings', label: 'My Listings', icon: <Activity className="w-4 h-4" />, href: '#' },
+        { id: 'listings', label: 'My Listings', icon: <Activity className="w-4 h-4" />, href: '/dashboard/listings' },
     ];
 
     const getRoleIcon = () => {
@@ -35,8 +35,8 @@ export default function DashboardShell({ children, user }: { children: React.Rea
                             <Link
                                 href={item.href}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${pathname === item.href
-                                        ? 'bg-primary/10 text-primary font-bold shadow-sm shadow-primary/5'
-                                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                                    ? 'bg-primary/10 text-primary font-bold shadow-sm shadow-primary/5'
+                                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                                     }`}
                             >
                                 {item.icon}
@@ -49,8 +49,8 @@ export default function DashboardShell({ children, user }: { children: React.Rea
                     <Link
                         href="/settings"
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${pathname === '/settings'
-                                ? 'bg-primary/10 text-primary font-bold'
-                                : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                            ? 'bg-primary/10 text-primary font-bold'
+                            : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                             }`}
                     >
                         <Settings className="w-4 h-4" />
