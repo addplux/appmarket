@@ -3,7 +3,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenRefreshView
 from users.views import UserViewSet
+from users.auth_views import register_view, login_view, logout_view, current_user_view
 from listings.views import CategoryViewSet, ListingViewSet
 from ratings.views import RatingViewSet
 from investments.views import InvestmentViewSet
@@ -18,6 +20,12 @@ router.register(r'investments', InvestmentViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    # Authentication endpoints
+    path('api/auth/register/', register_view, name='register'),
+    path('api/auth/login/', login_view, name='login'),
+    path('api/auth/logout/', logout_view, name='logout'),
+    path('api/auth/me/', current_user_view, name='current-user'),
+    path('api/auth/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
 ]
 
 if settings.DEBUG:
