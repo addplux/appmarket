@@ -8,7 +8,7 @@ from users.views import UserViewSet
 from users.auth_views import register_view, login_view, logout_view, current_user_view
 from listings.views import CategoryViewSet, ListingViewSet
 from ratings.views import RatingViewSet
-from investments.views import InvestmentViewSet
+from investments.views import InvestmentViewSet, InterestViewSet
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -16,6 +16,7 @@ router.register(r'categories', CategoryViewSet)
 router.register(r'listings', ListingViewSet)
 router.register(r'ratings', RatingViewSet)
 router.register(r'investments', InvestmentViewSet)
+router.register(r'interests', InterestViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -41,9 +41,14 @@ export default function ListingCard({ listing }: ListingCardProps) {
                     </p>
 
                     <div className="flex items-center justify-between mt-auto">
-                        <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
-                            Emerging App
-                        </span>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">
+                                {listing.status === 'active' ? 'Verified Opportunity' : listing.status}
+                            </span>
+                            <span className="text-sm font-bold text-foreground">
+                                {listing.price && parseFloat(listing.price) > 0 ? `$${listing.price}` : 'FREE / CONTACT'}
+                            </span>
+                        </div>
                         <span className="text-violet-400 text-sm font-medium">View More</span>
                     </div>
                 </div>

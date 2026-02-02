@@ -3,36 +3,46 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, DollarSign, Send } from 'lucide-react';
+import api from '../lib/api';
 
 interface InvestmentModalProps {
     isOpen: boolean;
     onClose: () => void;
     listingTitle: string;
+    listingId: number;
 }
 
-export default function InvestmentModal({ isOpen, onClose, listingTitle }: InvestmentModalProps) {
+export default function InvestmentModal({ isOpen, onClose, listingTitle, listingId }: InvestmentModalProps) {
     const [amount, setAmount] = useState<number | ''>('');
     const [message, setMessage] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setError(null);
 
-        // Mock API call
-        setTimeout(() => {
-            setIsSubmitting(false);
+        try {
+            await api.post('/interests/', {
+                listing: listingId,
+                message: `Investment Amount: $${amount}. ${message}`,
+            });
             setIsSuccess(true);
             setTimeout(() => {
                 onClose();
                 setIsSuccess(false);
                 setAmount('');
                 setMessage('');
-            }, 2000);
-        }, 1500);
+            }, 2500);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to send interest request.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -65,6 +75,11 @@ export default function InvestmentModal({ isOpen, onClose, listingTitle }: Inves
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {error && (
+                            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm">
+                                {error}
+                            </div>
+                        )}
                         <div>
                             <label className="block text-sm font-medium text-muted-foreground mb-2">Investment Amount (USD)</label>
                             <div className="relative">

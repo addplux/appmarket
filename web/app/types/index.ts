@@ -22,6 +22,10 @@ export interface Listing {
     logo: string | null;
     video_url: string;
     external_link: string;
+    apk_file: string | null;
+    price: string;
+    features: string;
+    status: 'pending' | 'active' | 'rejected';
     created_at: string;
     is_active: boolean;
 }
