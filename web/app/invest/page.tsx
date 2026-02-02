@@ -1,7 +1,11 @@
-'use client';
-
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Invest in Emerging Assets',
+    description: 'Direct access to high-yield opportunities in apps, hospitality, and education.',
+};
 import { motion } from 'framer-motion';
 import { TrendingUp, ShieldCheck, Zap, ArrowRight, Search, MessageSquare, Handshake } from 'lucide-react';
 import Link from 'next/link';

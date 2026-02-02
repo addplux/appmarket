@@ -2,6 +2,12 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Invest in the Future",
+  description: "Explore high-growth opportunities in apps, hotels, and universities.",
+};
 
 export default function Home() {
   return (
